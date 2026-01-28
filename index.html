@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS-GPA 計算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            background-color: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .radio-option label:hover {
+            border-color: #667eea;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .result-box {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 10px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-box h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .result-box p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .result-box .score {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .note {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .section-divider {
+            margin: 30px 0;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .tab:hover {
+            background: #e8e8e8;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 15px;
+        }
+
+        .reset-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DS-GPA 計算器</h1>
+            <p>Diagnosis-Specific Graded Prognostic Assessment</p>
+        </div>
+
+        <div class="content">
+            <!-- 標籤頁導航 -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('lung_adeno')">肺腺癌</div>
+                <div class="tab" onclick="switchTab('lung_non_adeno')">肺非腺癌</div>
+                <div class="tab" onclick="switchTab('melanoma')">黑色素瘤</div>
+                <div class="tab" onclick="switchTab('breast')">乳癌</div>
+                <div class="tab" onclick="switchTab('renal')">腎細胞癌</div>
+                <div class="tab" onclick="switchTab('gi')">消化道癌症</div>
+            </div>
+
+            <!-- 肺腺癌 -->
+            <div id="lung_adeno" class="tab-content active">
+                <form onsubmit="calculateScore(event, 'lung_adeno')">
+                    <div id="fields_lung_adeno"></div>
+                    <button type="submit" class="btn">計算 DS-GPA 分數</button>
+                    <button type="button" class="reset-btn" onclick="resetForm('lung_adeno')">重設</button>
+                </form>
+                <div id="result_lung_adeno" class="result-box"></div>
+            </div>
+
+            <!-- 肺非腺癌 -->
+            <div id="lung_non_adeno" class="tab-content">
+                <form onsubmit="calculateScore(event, 'lung_non_adeno')">
+                    <div id="fields_lung_non_adeno"></div>
+                    <button type="submit" class="btn">計算 DS-GPA 分數</button>
+                    <button type="button" class="reset-btn" onclick="resetForm('lung_non_adeno')">重設</button>
+                </form>
+                <div id="result_lung_non_adeno" class="result-box"></div>
+            </div>
+
+            <!-- 黑色素瘤 -->
+            <div id="melanoma" class="tab-content">
+                <form onsubmit="calculateScore(event, 'melanoma')">
+                    <div id="fields_melanoma"></div>
+                    <button type="submit" class="btn">計算 DS-GPA 分數</button>
+                    <button type="button" class="reset-btn" onclick="resetForm('melanoma')">重設</button>
+                </form>
+                <div id="result_melanoma" class="result-box"></div>
+            </div>
+
+            <!-- 乳癌 -->
+            <div id="breast" class="tab-content">
+                <form onsubmit="calculateScore(event, 'breast')">
+                    <div id="fields_breast"></div>
+                    <button type="submit" class="btn">計算 DS-GPA 分數</button>
+                    <button type="button" class="reset-btn" onclick="resetForm('breast')">重設</button>
+                </form>
+                <div id="result_breast" class="result-box"></div>
+            </div>
+
+            <!-- 腎細胞癌 -->
+            <div id="renal" class="tab-content">
+                <form onsubmit="calculateScore(event, 'renal')">
+                    <div id="fields_renal"></div>
+                    <button type="submit" class="btn">計算 DS-GPA 分數</button>
+                    <button type="button" class="reset-btn" onclick="resetForm('renal')">重設</button>
+                </form>
+                <div id="result_renal" class="result-box"></div>
+            </div>
+
+            <!-- 消化道癌症 -->
+            <div id="gi" class="tab-content">
+                <form onsubmit="calculateScore(event, 'gi')">
+                    <div id="fields_gi"></div>
+                    <button type="submit" class="btn">計算 DS-GPA 分數</button>
+                    <button type="button" class="reset-btn" onclick="resetForm('gi')">重設</button>
+                </form>
+                <div id="result_gi" class="result-box"></div>
+            </div>
+
+            <div class="note">
+                <strong>注意：</strong>此工具僅供參考。治療決策應由多學科團隊共同制定。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const formFields = {
+            lung_adeno: [
+                { id: 'kps', label: 'KPS 評分', type: 'radio', options: [
+                    { value: '1.0', label: '≥90' },
+                    { value: '0.5', label: '80' },
+                    { value: '0.0', label: '<80' }
+                ]},
+                { id: 'age', label: '年齡', type: 'radio', options: [
+                    { value: '0.5', label: '<70' },
+                    { value: '0.0', label: '≥70' }
+                ]},
+                { id: 'num_bm', label: '腦轉移數量', type: 'radio', options: [
+                    { value: '1.0', label: '≤4' },
+                    { value: '0.0', label: '>4' }
+                ]},
+                { id: 'ecm', label: '腦外轉移', type: 'radio', options: [
+                    { value: '1.0', label: '無' },
+                    { value: '0.0', label: '有' }
+                ]},
+                { id: 'gene', label: 'EGFR 或 ALK 陽性', type: 'radio', options: [
+                    { value: '1.0', label: '是' },
+                    { value: '0.0', label: '否/未知' }
+                ]}
+            ],
+            lung_non_adeno: [
+                { id: 'kps', label: 'KPS 評分', type: 'radio', options: [
+                    { value: '1.0', label: '≥90' },
+                    { value: '0.5', label: '80' },
+                    { value: '0.0', label: '<80' }
+                ]},
+                { id: 'age', label: '年齡', type: 'radio', options: [
+                    { value: '0.5', label: '<70' },
+                    { value: '0.0', label: '≥70' }
+                ]},
+                { id: 'num_bm', label: '腦轉移數量', type: 'radio', options: [
+                    { value: '1.0', label: '≤4' },
+                    { value: '0.0', label: '>4' }
+                ]},
+                { id: 'ecm', label: '腦外轉移', type: 'radio', options: [
+                    { value: '1.0', label: '無' },
+                    { value: '0.0', label: '有' }
+                ]}
+            ],
+            melanoma: [
+                { id: 'kps', label: 'KPS 評分', type: 'radio', options: [
+                    { value: '1.0', label: '≥90' },
+                    { value: '0.5', label: '70-80' },
+                    { value: '0.0', label: '<70' }
+                ]},
+                { id: 'age', label: '年齡', type: 'radio', options: [
+                    { value: '0.5', label: '<70' },
+                    { value: '0.0', label: '≥70' }
+                ]},
+                { id: 'num_bm', label: '腦轉移數量', type: 'radio', options: [
+                    { value: '1.0', label: '1' },
+                    { value: '0.5', label: '2-4' },
+                    { value: '0.0', label: '>4' }
+                ]},
+                { id: 'ecm', label: '腦外轉移', type: 'radio', options: [
+                    { value: '1.0', label: '無' },
+                    { value: '0.0', label: '有' }
+                ]},
+                { id: 'braf', label: 'BRAF 陽性', type: 'radio', options: [
+                    { value: '1.0', label: '是' },
+                    { value: '0.0', label: '否/未知' }
+                ]}
+            ],
+            breast: [
+                { id: 'subtype', label: '亞型', type: 'radio', options: [
+                    { value: '1.5', label: 'HER2+ 或 Luminal B' },
+                    { value: '1.0', label: 'Luminal A' },
+                    { value: '0.0', label: 'Basal/三陰性' }
+                ]},
+                { id: 'kps', label: 'KPS 評分', type: 'radio', options: [
+                    { value: '1.0', label: '≥90' },
+                    { value: '0.5', label: '70-80' },
+                    { value: '0.0', label: '<70' }
+                ]},
+                { id: 'age', label: '年齡', type: 'radio', options: [
+                    { value: '0.5', label: '<60' },
+                    { value: '0.0', label: '≥60' }
+                ]},
+                { id: 'num_bm', label: '腦轉移數量', type: 'radio', options: [
+                    { value: '0.5', label: '1' },
+                    { value: '0.0', label: '≥2' }
+                ]},
+                { id: 'ecm', label: '腦外轉移', type: 'radio', options: [
+                    { value: '0.5', label: '無' },
+                    { value: '0.0', label: '有' }
+                ]}
+            ],
+            renal: [
+                { id: 'kps', label: 'KPS 評分', type: 'radio', options: [
+                    { value: '2.0', label: '≥90' },
+                    { value: '1.0', label: '80' },
+                    { value: '0.0', label: '<80' }
+                ]},
+                { id: 'num_bm', label: '腦轉移數量', type: 'radio', options: [
+                    { value: '1.0', label: '≤4' },
+                    { value: '0.0', label: '>4' }
+                ]},
+                { id: 'ecm', label: '腦外轉移', type: 'radio', options: [
+                    { value: '1.0', label: '無' },
+                    { value: '0.0', label: '有' }
+                ]}
+            ],
+            gi: [
+                { id: 'kps', label: 'KPS 評分', type: 'radio', options: [
+                    { value: '2.0', label: '≥90' },
+                    { value: '1.0', label: '80' },
+                    { value: '0.0', label: '<80' }
+                ]},
+                { id: 'age', label: '年齡', type: 'radio', options: [
+                    { value: '0.5', label: '<60' },
+                    { value: '0.0', label: '≥60' }
+                ]},
+                { id: 'num_bm', label: '腦轉移數量', type: 'radio', options: [
+                    { value: '1.0', label: '1' },
+                    { value: '0.5', label: '2-3' },
+                    { value: '0.0', label: '>3' }
+                ]},
+                { id: 'ecm', label: '腦外轉移', type: 'radio', options: [
+                    { value: '0.5', label: '無' },
+                    { value: '0.0', label: '有' }
+                ]}
+            ]
+        };
+
+        const survivalData = {
+            lung_adeno: {
+                3.5: '46-47 個月',
+                2.5: '25-30 個月',
+                1.5: '13-15 個月',
+                0: '6-7 個月'
+            },
+            lung_non_adeno: '依分數：0.0-1.0 (5個月), 1.5-2.0 (10個月), 2.5-3.0 (13個月)',
+            melanoma: {
+                3.5: '34 個月',
+                2.5: '16 個月',
+                1.5: '8 個月',
+                0: '5 個月'
+            },
+            breast: {
+                3.5: '36 個月',
+                2.5: '24 個月',
+                1.5: '13 個月',
+                0: '6 個月'
+            },
+            renal: {
+                3.5: '35 個月',
+                2.5: '17 個月',
+                1.5: '12 個月',
+                0: '4 個月'
+            },
+            gi: {
+                3.5: '17 個月',
+                2.5: '11 個月',
+                1.5: '7 個月',
+                0: '3 個月'
+            }
+        };
+
+        // 初始化所有表單
+        window.onload = function() {
+            Object.keys(formFields).forEach(cancerType => {
+                renderFormFields(cancerType);
+            });
+        };
+
+        function switchTab(cancerType) {
+            // 隱藏所有標籤內容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有標籤的 active 類
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 顯示選中的標籤內容
+            document.getElementById(cancerType).classList.add('active');
+            
+            // 添加 active 類到選中的標籤
+            event.target.classList.add('active');
+        }
+
+        function renderFormFields(cancerType) {
+            const container = document.getElementById(`fields_${cancerType}`);
+            container.innerHTML = '';
+
+            const fields = formFields[cancerType];
+            fields.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'form-group';
+
+                const label = document.createElement('label');
+                label.textContent = field.label;
+                fieldDiv.appendChild(label);
+
+                if (field.type === 'radio') {
+                    const radioGroup = document.createElement('div');
+                    radioGroup.className = 'radio-group';
+
+                    field.options.forEach((option, index) => {
+                        const radioDiv = document.createElement('div');
+                        radioDiv.className = 'radio-option';
+
+                        const input = document.createElement('input');
+                        input.type = 'radio';
+                        input.id = `${cancerType}_${field.id}_${index}`;
+                        input.name = `${cancerType}_${field.id}`;
+                        input.value = option.value;
+                        input.required = true;
+
+                        const optionLabel = document.createElement('label');
+                        optionLabel.htmlFor = `${cancerType}_${field.id}_${index}`;
+                        optionLabel.textContent = option.label;
+
+                        radioDiv.appendChild(input);
+                        radioDiv.appendChild(optionLabel);
+                        radioGroup.appendChild(radioDiv);
+                    });
+
+                    fieldDiv.appendChild(radioGroup);
+                }
+
+                container.appendChild(fieldDiv);
+            });
+        }
+
+        function calculateScore(event, cancerType) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            let totalScore = 0;
+
+            for (let [key, value] of formData.entries()) {
+                totalScore += parseFloat(value);
+            }
+
+            displayResult(totalScore, cancerType);
+        }
+
+        function displayResult(score, cancerType) {
+            const resultDiv = document.getElementById(`result_${cancerType}`);
+            let survival = '';
+
+            if (cancerType === 'lung_non_adeno') {
+                survival = survivalData[cancerType];
+            } else {
+                const data = survivalData[cancerType];
+                if (score >= 3.5) survival = data[3.5];
+                else if (score >= 2.5) survival = data[2.5];
+                else if (score >= 1.5) survival = data[1.5];
+                else survival = data[0];
+            }
+
+            resultDiv.innerHTML = `
+                <h3>計算結果</h3>
+                <div class="score">DS-GPA 分數：${score.toFixed(1)}/4.0</div>
+                <p><strong>預估中位存活期：</strong>${survival}</p>
+            `;
+
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function resetForm(cancerType) {
+            // 重設表單
+            const form = document.querySelector(`#${cancerType} form`);
+            form.reset();
+            
+            // 隱藏結果
+            const resultDiv = document.getElementById(`result_${cancerType}`);
+            resultDiv.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
