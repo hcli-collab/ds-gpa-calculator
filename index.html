@@ -212,7 +212,7 @@
         }
 
         .tab {
-            padding: 12px 20px;
+            padding: 10px 15px;
             background: #f5f5f5;
             border: 2px solid #e0e0e0;
             border-radius: 8px 8px 0 0;
@@ -220,8 +220,9 @@
             font-weight: 500;
             transition: all 0.3s;
             flex: 1;
-            min-width: 150px;
+            min-width: 140px;
             text-align: center;
+            line-height: 1.4;
         }
 
         .tab:hover {
@@ -272,12 +273,24 @@
         <div class="content">
             <!-- 標籤頁導航 -->
             <div class="tabs">
-                <div class="tab active" onclick="switchTab('lung_adeno')">肺腺癌</div>
-                <div class="tab" onclick="switchTab('lung_non_adeno')">肺非腺癌</div>
-                <div class="tab" onclick="switchTab('melanoma')">黑色素瘤</div>
-                <div class="tab" onclick="switchTab('breast')">乳癌</div>
-                <div class="tab" onclick="switchTab('renal')">腎細胞癌</div>
-                <div class="tab" onclick="switchTab('gi')">消化道癌症</div>
+                <div class="tab active" onclick="switchTab('lung_adeno')">
+                    肺腺癌<br><span style="font-size: 13px; opacity: 0.9;">Lung Adenocarcinoma</span>
+                </div>
+                <div class="tab" onclick="switchTab('lung_non_adeno')">
+                    肺非腺癌<br><span style="font-size: 13px; opacity: 0.9;">Lung Non-Adeno</span>
+                </div>
+                <div class="tab" onclick="switchTab('melanoma')">
+                    黑色素瘤<br><span style="font-size: 13px; opacity: 0.9;">Melanoma</span>
+                </div>
+                <div class="tab" onclick="switchTab('breast')">
+                    乳癌<br><span style="font-size: 13px; opacity: 0.9;">Breast Cancer</span>
+                </div>
+                <div class="tab" onclick="switchTab('renal')">
+                    腎細胞癌<br><span style="font-size: 13px; opacity: 0.9;">Renal Cell Carcinoma</span>
+                </div>
+                <div class="tab" onclick="switchTab('gi')">
+                    消化道癌症<br><span style="font-size: 13px; opacity: 0.9;">GI Cancers</span>
+                </div>
             </div>
 
             <!-- 肺腺癌 -->
